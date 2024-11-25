@@ -26,17 +26,24 @@ function SpaceXLaunches() {
   const [statusFilter, setStatusFilter] = useState<"all" | "success" | "failure" | "upcoming">("all");
   const loaderRef = useRef<HTMLDivElement | null>(null);
 
+  type NASAImage = {
+    url: string;
+    explanation: string;
+    title: string;
+  };
+  
   const fetchBackgroundImages = async () => {
     try {
-      const response = await axios.get(
+      const response = await axios.get<NASAImage[]>(
         `https://api.nasa.gov/planetary/apod?count=5&api_key=rAH727r2zWExCJSOKkYx98Y0sC03KwP9PNC0jhwy`
       );
-      const urls = response.data.map((item: any) => item.url);
+      const urls = response.data.map((item) => item.url);
       setBackgroundImages((prev) => [...prev, ...urls]);
     } catch (error) {
       console.error("Failed to fetch NASA APOD images");
     }
   };
+  
 
   useEffect(() => {
     fetchBackgroundImages();
